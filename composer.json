@@ -1,0 +1,24 @@
+{
+    "name": "tianhe1986/fatsmalltools",
+    "type": "library",
+    "description": "some small tools",
+    "keywords": ["tools"],
+    "license": "MIT",
+    "homepage": "https://github.com/tianhe1986/FatSmallTools",
+    "require": {
+        "php": "^7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "FatSmallTools\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FatSmallTools\\Tests\\": "tests/"
+        }
+    }
+}
