@@ -37,22 +37,32 @@ class RedBlackTree
         $this->compareFun = $compareFun;
     }
     
-    // for debug
-    public function orderPrint(TreeNode $root)
+    public function orderPrint()
     {
-        if ($root == null) {
-            return;
-        }
-        
-        $this->orderPrint($root->left);
-        echo $root->data . "\n";
-        $this->orderPrint($root->right);
+        $this->innerOrderPrint($this->root);
+    }
+    
+    public function levelPrint()
+    {
+        $this->innerLevelPrint($this->root);
     }
     
     // for debug
-    public function levelPrint(TreeNode $root)
+    protected function innerOrderPrint(TreeNode $root = null)
     {
-        if ($root == null) {
+        if ($root === null) {
+            return;
+        }
+        
+        $this->innerOrderPrint($root->left);
+        echo $root->data . "\n";
+        $this->innerOrderPrint($root->right);
+    }
+    
+    // for debug
+    protected function innerLevelPrint(TreeNode $root = null)
+    {
+        if ($root === null) {
             return;
         }
         
@@ -63,7 +73,7 @@ class RedBlackTree
             $item = $queue->dequeue();
             
             $temp = $item[0];
-            echo "level ".$item[1].", ".$temp->data."\n";
+            echo "level ".$item[1].", color ".$temp->color.", data".$temp->data."\n";
             
             if ($temp->left !== null) {
                 $queue->enqueue([$temp->left, $item[1] + 1]);
@@ -75,23 +85,28 @@ class RedBlackTree
         }
     }
     
-    protected function compare($nodea, $nodeb)
+    protected function compare(TreeNode $nodea, TreeNode $nodeb)
     {
         if ($this->compareFun !== null) {
-            return $this->compareFun($nodea, $nodeb);
+            return $this->compareFun($nodea->data, $nodeb->data);
         }
         
         // treat as number
-        return $nodea - $nodeb;
+        return $nodea->data - $nodeb->data;
     }
 
 
-    protected function bstInsert(TreeNode $root, TreeNode $node)
+    protected function bstInsert(TreeNode $root = null, TreeNode $node = null)
     {
         // empty, then the new node become new root
+        
         if (null === $root) {
             $this->size++;
             return $node;
+        }
+        
+        if (null === $node) {
+            return $root;
         }
         
         $compareResult = $this->compare($node, $root);
@@ -200,7 +215,7 @@ class RedBlackTree
                 } else {
                     // RIGHT LEFT case, right rotate parent, become RIGHT RIGHT case
                     if ($node == $parentNode->left) {
-                        $this->rotateLeft($parentNode);
+                        $this->rotateRight($parentNode);
                         $node = $parentNode;
                         $parentNode = $node->parent;
                     }
@@ -223,11 +238,16 @@ class RedBlackTree
     
     public function insert($data)
     {
-        $newNode = new TreeNode($data);
+        $node = new TreeNode($data);
         
         // Do normal BST insert
         $this->root = $this->bstInsert($this->root, $node);
         
+        // not insert
+        if ($node->parent === null && $node != $this->root) {
+            return;
+        }
+
         // Fix Red Black Tree violations
         $this->fixViolation($this->root, $node);
     }
