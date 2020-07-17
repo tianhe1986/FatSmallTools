@@ -326,7 +326,7 @@ class RedBlackTree
         $u = $this->bstReplace($v);
         
         // True when u and v are both black
-        $uvBlack = (($u == null || $u->color == Color::BLACK) && $v->color = Color::BLACK);
+        $uvBlack = (($u == null || $u->color == Color::BLACK) && $v->color == Color::BLACK);
         $parent = $v->parent;
         
         if ($u == null) { // u is NULL therefore v is leaf 
