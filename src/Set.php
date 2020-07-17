@@ -110,14 +110,18 @@ class RedBlackTree
     
     protected function compare(TreeNode $nodea, TreeNode $nodeb)
     {
+        return $this->compareValue($nodea->data, $nodeb->data);
+    }
+    
+    protected function compareValue($a, $b)
+    {
         if ($this->compareFun !== null) {
-            return $this->compareFun($nodea->data, $nodeb->data);
+            return $this->compareFun($a, $b);
         }
         
         // treat as number
-        return $nodea->data - $nodeb->data;
+        return $a - $b;
     }
-
 
     protected function bstInsert(TreeNode $root = null, TreeNode $node = null)
     {
@@ -151,7 +155,9 @@ class RedBlackTree
         $rightSon = $node->right;
         
         $node->right = $rightSon->left;
-        $node->right->parent = $node;
+        if ($node->right) {
+            $node->right->parent = $node;
+        }
         
         // deal parent of node
         $parent = $node->parent;
@@ -175,7 +181,9 @@ class RedBlackTree
         $leftSon = $node->left;
         
         $node->left = $leftSon->right;
-        $node->left->parent = $node;
+        if ($node->left) {
+            $node->left->parent = $node;
+        }
         
         $parent = $node->parent;
         if ($parent === null) {
@@ -461,7 +469,7 @@ class RedBlackTree
         $temp = $this->root;
         
         while ($temp != null) {
-            $compareResult = $this->compareFun($data, $temp->data);
+            $compareResult = $this->compareValue($data, $temp->data);
             
             if ($compareResult == 0) {
                 break;
@@ -493,7 +501,7 @@ class RedBlackTree
         
         $v = $this->search($data);
         
-        if ($this->compareFun($v->data, $data) != 0) {
+        if ($this->compareValue($v->data, $data) != 0) {
             return;
         }
         
@@ -505,7 +513,7 @@ class RedBlackTree
         // Call real search
         $node = $this->search($data);
         
-        if ($this->compareFun($node->data, $data) == 0) {
+        if ($this->compareValue($node->data, $data) == 0) {
             return $node;
         }
         
